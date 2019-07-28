@@ -6,14 +6,22 @@ export KJOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
 
 #ccache=$(which ccache)
 
-CLANG_VERSION="clang-r353983e"
 function clone_clang()
 {
+  CLANG_VERSION="clang-r353983e"
   git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 clang
   cd clang
   find . | grep -v ${CLANG_VERSION} | xargs rm -rf
   CLANG="${ccache} ${PWD}/${CLANG_VERSION}/bin/clang"
   cd ..
+}
+
+function clone_proton_clang()
+{
+  curl -LfH "Accept: application/octet-stream" "$(curl -sSf "https://api.github.com/repos/kdrag0n/proton-clang-build/releases/latest" | jq -r '.assets[0].url')" | tar -I zstd -xf -
+  CLANG_VERSION=proton_clang*
+  mv proton_clang* clang
+  CLANG="${ccache} ${PWD}/clang/bin/clang"
 }
 
 GCC64_TYPE="aarch64-elf-"
@@ -83,7 +91,7 @@ function errored()
 cd ${HOME}
 clone_gcc
 if [[ "$@" =~ "clang" ]]; then
-  clone_clang
+  clone_proton_clang
 fi
 
 OUT_DIR=${HOME}/out
