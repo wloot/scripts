@@ -12,7 +12,7 @@ function clone_clang()
   git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 clang
   cd clang
   find . | grep -v ${CLANG_VERSION} | xargs rm -rf
-  CLANG_BIN="${PWD}/${CLANG_VERSION}/bin/clang"
+  CLANG="${ccache} ${PWD}/${CLANG_VERSION}/bin/clang"
   cd ..
 }
 
@@ -22,8 +22,8 @@ function clone_gcc()
 {
   git clone https://github.com/kdrag0n/${GCC64_TYPE}gcc
   git clone https://github.com/kdrag0n/${GCC32_TYPE}gcc
-  export CROSS_COMPILE="${ccache} ${PWD}/${GCC64_TYPE}gcc/bin/${GCC64_TYPE}"
-  export CROSS_COMPILE_ARM32="${ccache} ${PWD}/${GCC32_TYPE}gcc/bin/${GCC32_TYPE}"
+  GCC64="${ccache} ${PWD}/${GCC64_TYPE}gcc/bin/${GCC64_TYPE}"
+  GCC32="${ccache} ${PWD}/${GCC32_TYPE}gcc/bin/${GCC32_TYPE}"
 }
 
 #输出目录 设备
@@ -31,7 +31,7 @@ function build_gcc()
 {
   rm -rf ${1}/arch/arm64/boot
   make O=${1} ${2}_defconfig
-  make -j${KJOBS} O=${1}
+  make -j${KJOBS} O=${1} CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
   if [ $? -ne 0 ]; then
     errored "为SAGIT构建时出错， 终止。。。"
   fi
@@ -40,7 +40,7 @@ function build_clang()
 {
   rm -rf ${1}/arch/arm64/boot
   make O=${1} ${2}_defconfig
-  make -j${KJOBS} O=${1} CC="${ccache} ${CLANG_BIN}" CLANG_TRIPLE=${GCC64_TYPE}
+  make -j${KJOBS} O=${1} CC="${CLANG}" CLANG_TRIPLE=${GCC64_TYPE} CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
   if [ $? -ne 0 ]; then
     errored "为CHIRON构建时出错， 终止。。。"
   fi
