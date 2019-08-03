@@ -1,5 +1,4 @@
 #!/bin/bash
-export ARCH=arm64
 export KBUILD_BUILD_USER=LiuNian
 export KBUILD_BUILD_HOST=wloot
 export KJOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
@@ -21,9 +20,12 @@ function clone_proton_clang()
   curl -LfH "Accept: application/octet-stream" "$(curl -sSf "https://api.github.com/repos/kdrag0n/proton-clang-build/releases/latest" | jq -r '.assets[0].url')" | tar -I zstd -xf -
   CLANG_VERSION="CLANG 10"
   mv proton_clang* clang
-  echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
-  apt-get install libc6 libstdc++6 libgnutls30 -y
+#  echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
+#  apt-get install libc6 libstdc++6 libgnutls30 -y
   CLANG_PATH="${PWD}/clang"
+  GCC64="${CLANG_PATH}/bin/aarch64-linux-gnu-"
+  GCC32="${CLANG_PATH}/bin/arm-linux-gnueabi-"
+  GCC64_TYPE="aarch64-linux-gnu-"
 }
 
 function clone_gcc()
@@ -49,8 +51,8 @@ function install_ubuntu_gcc()
 function build_gcc()
 {
   rm -rf ${1}/arch/arm64/boot
-  make O=${1} ${2}_defconfig
-  make -j${KJOBS} O=${1} CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
+  make O=${1} ARCH=arm64 ${2}_defconfig
+  make -j${KJOBS} O=${1} ARCH=arm64 CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
   if [ $? -ne 0 ]; then
     errored "为${2}构建时出错， 终止。。。"
   fi
@@ -58,8 +60,8 @@ function build_gcc()
 function build_clang()
 {
   rm -rf ${1}/arch/arm64/boot
-  make O=${1} ${2}_defconfig
-  make -j${KJOBS} O=${1} CC="${CLANG}" CLANG_TRIPLE=${GCC64_TYPE} CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
+  make O=${1} ARCH=arm64 ${2}_defconfig
+  make -j${KJOBS} O=${1} ARCH=arm64 CC="${CLANG}" CLANG_TRIPLE=${GCC64_TYPE} CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}"
   if [ $? -ne 0 ]; then
     errored "为${2}构建时出错， 终止。。。"
   fi
@@ -101,7 +103,7 @@ function errored()
 
 cd ${HOME}
 #clone_gcc
-install_ubuntu_gcc
+#install_ubuntu_gcc
 if [[ "$@" =~ "clang" ]]; then
   clone_proton_clang
   CLANG="${ccache} ${CLANG_PATH}/bin/clang"
