@@ -17,7 +17,7 @@ function clone_clang()
 
 function clone_proton_clang()
 {
-  curl https://kdrag0n.dev/files/toolchains/proton_clang-10.0.0-20190806-full-skylake.tar.zst | tar -I zstd -xf -
+  curl https://kdrag0n.dev/files/toolchains/proton_clang-10.0.0-20190818-full.tar.zst | tar -I zstd -xf -
   CLANG_VERSION="CLANG 10"
   mv proton_clang* clang
   echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
