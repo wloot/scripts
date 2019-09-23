@@ -17,11 +17,12 @@ function clone_clang()
   cd ..
 }
 
-function clone_proton_clang()
+function clone_custom_clang()
 {
-  curl https://kdrag0n.dev/files/toolchains/proton_clang-10.0.0-20190915-full.tar.zst | tar -I zstd -xf -
+  git clone https://github.com/wloot/clang --depth=1 -b master clang
+#  curl https://kdrag0n.dev/files/toolchains/proton_clang-10.0.0-20190915-full.tar.zst | tar -I zstd -xf -
   CLANG_VERSION="CLANG 10"
-  mv proton_clang* clang
+#  mv proton_clang* clang
 #  echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
 #  apt-get install libc6 libstdc++6 libgnutls30 -y
   CLANG_PATH="${PWD}/clang"
@@ -116,7 +117,7 @@ cd ${HOME}
 #clone_gcc
 #install_ubuntu_gcc
 if [[ "$@" =~ "clang" ]]; then
-  clone_proton_clang
+  clone_custom_clang
   export LD_LIBRARY_PATH="${CLANG_PATH}/lib:${CLANG_PATH}/lib64:$LD_LIBRARY_PATH"
   export PATH="${CLANG_PATH}/bin:$PATH"
 fi
