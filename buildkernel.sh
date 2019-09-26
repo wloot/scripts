@@ -3,7 +3,7 @@ export KBUILD_BUILD_USER=LiuNian
 export KBUILD_BUILD_HOST=wloot
 export KJOBS="$((`grep -c '^processor' /proc/cpuinfo` * 2))"
 
-#ccache=$(which ccache)
+ccache=$(which ccache)
 
 function clone_clang()
 {
@@ -23,8 +23,8 @@ function clone_custom_clang()
 #  curl https://kdrag0n.dev/files/toolchains/proton_clang-10.0.0-20190915-full.tar.zst | tar -I zstd -xf -
   CLANG_VERSION="CLANG 10"
 #  mv proton_clang* clang
-#  echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
-#  apt-get install libc6 libstdc++6 libgnutls30 -y
+  echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
+  apt-get install libc6 libstdc++6 libgnutls30 -y
   CLANG_PATH="${PWD}/clang"
   GCC64="${CLANG_PATH}/bin/aarch64-linux-gnu-"
   GCC32="${CLANG_PATH}/bin/arm-linux-gnueabi-"
@@ -110,7 +110,7 @@ function pickcommit()
 }
 
 ####################################
-#   sagit and chiron build for drone.io   #
+#   sagit and chiron build for travis ci   #
 ####################################
 
 cd ${HOME}
@@ -124,7 +124,7 @@ fi
 
 OUT_DIR=${HOME}/out
 START=$(date +"%s")
-cd ${HOME}/src
+cd ${TRAVIS_BUILD_DIR}
 git fetch https://$GITID:$GITPWD@github.com/wloot/tmp.git idv3p
 pickcommit efbf36a60e55f8ed551d1b7ad5c10eff1caa7f7c
 GITHEAD=$(git rev-parse --short HEAD)
