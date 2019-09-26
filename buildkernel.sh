@@ -64,7 +64,7 @@ function build_clang()
 {
   rm -rf ${1}/arch/arm64/boot
   make O=${1} ARCH=arm64 ${2}_defconfig
-  make -j${KJOBS} O=${1} ARCH=arm64 CC="clang" AR="llvm-ar" NM="llvm-nm" OBJCOPY="llvm-objcopy" OBJDUMP="llvm-objdump" STRIP="llvm-strip" CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}" CLANG_TRIPLE="${GCC64_TYPE}"
+  make -j${KJOBS} O=${1} ARCH=arm64 CC="${ccache} clang" AR="llvm-ar" NM="llvm-nm" OBJCOPY="llvm-objcopy" OBJDUMP="llvm-objdump" STRIP="llvm-strip" CROSS_COMPILE="${GCC64}" CROSS_COMPILE_ARM32="${GCC32}" CLANG_TRIPLE="${GCC64_TYPE}"
   if [ $? -ne 0 ]; then
     errored "为${2}构建时出错， 终止。。。"
   fi
