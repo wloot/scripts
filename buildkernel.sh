@@ -24,7 +24,7 @@ function clone_custom_clang()
   CLANG_VERSION="CLANG 10"
 #  mv proton_clang* clang
   echo "deb http://archive.ubuntu.com/ubuntu eoan main" >> /etc/apt/sources.list && apt-get update
-  apt-get install libc6 libstdc++6 libgnutls30 -y
+  apt-get --no-install-recommends install libc6 libstdc++6 libgnutls30 -y
   CLANG_PATH="${PWD}/clang"
   GCC64="${CLANG_PATH}/bin/aarch64-linux-gnu-"
   GCC32="${CLANG_PATH}/bin/arm-linux-gnueabi-"
