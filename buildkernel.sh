@@ -74,7 +74,7 @@ function build_clang()
 function work_zip()
 {
   git clone https://github.com/wloot/AnyKernel2
-  ZIPNAME=LoverOrientedKernel-${1}-${DRONE_BUILD_NUMBER}-MIUI-${GITHEAD}.zip
+  ZIPNAME=LoverOrientedKernel-${TRAVIS_BUILD_NUMBER}-${1}-MIUI-${GITHEAD}.zip
   cp ${OUT_DIR}/arch/arm64/boot/Image.gz-dtb AnyKernel2
   cd AnyKernel2
   zip -r ${ZIPNAME} *
