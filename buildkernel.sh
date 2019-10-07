@@ -126,8 +126,8 @@ fi
 OUT_DIR=${HOME}/out
 START=$(date +"%s")
 cd ${TRAVIS_BUILD_DIR}
-git fetch https://$GITID:$GITPWD@github.com/wloot/tmp.git idv3p
-pickcommit efbf36a60e55f8ed551d1b7ad5c10eff1caa7f7c
+#git fetch https://$GITID:$GITPWD@github.com/wloot/tmp.git idv3p
+#pickcommit efbf36a60e55f8ed551d1b7ad5c10eff1caa7f7c
 GITHEAD=$(git rev-parse --short HEAD)
 
 if [[ "$@" =~ "clang" ]]; then
