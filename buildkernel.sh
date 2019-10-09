@@ -115,8 +115,9 @@ function pickcommit()
 ####################################
 
 cd ${HOME}
-#clone_gcc
-#install_ubuntu_gcc
+if [[ "$@" =~ "gcc" ]]; then
+  clone_gcc
+fi
 if [[ "$@" =~ "clang" ]]; then
   clone_custom_clang
   export LD_LIBRARY_PATH="${CLANG_PATH}/lib:${CLANG_PATH}/lib64:$LD_LIBRARY_PATH"
